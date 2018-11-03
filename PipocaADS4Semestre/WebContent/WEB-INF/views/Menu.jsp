@@ -9,7 +9,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">Hora da Pipoca</a>
+                <a class="navbar-brand" href="inicio">Hora da Pipoca</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -20,6 +20,13 @@
   						  <li><a class="dropdown-item" href="#">por Gênero</a></li>
   						   <li><a class="dropdown-item" href="catalogo_popularidade">por Popularidade</a></li>
   						   <li><a class="dropdown-item" href="#">Lançamentos</a></li>
+						</ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">The Movie DB</a>
+                    		<ul class="dropdown-menu">
+  						   <li><a class="dropdown-item" href="baixar_populares">Mais Populares</a></li>
+  						   <li><a class="dropdown-item" href="baixar_lancamentos">Lançamentos</a></li>
 						</ul>
                     </li>
                 </ul>

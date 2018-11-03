@@ -74,6 +74,7 @@
                         <table class="table table-striped" cellspacing="0" cellpadding="0">
                             <thead>
                                 <tr>
+                                	<th>Poster</th>
                                     <th>ID</th>
                                     <th>Título</th>
                                     <th>Direção</th>
@@ -85,6 +86,9 @@
                             <tbody>
           					<c:forEach var="filme" items="${lista}">
                                        <tr>
+                                       		<td>
+                                       			<img src="${filme.posterPath}" height="48" width="48" class="img-thumbnail">
+                                       		</td>
                                             <td>
                                                ${filme.id }
                                             </td>
@@ -101,8 +105,8 @@
                                                 ${filme.genero.nome}
                                             </td>
                                             <td class="actions">
-                                                <a class="btn btn-success btn-xs" href="visualizar_filme?&id=${filme.id}">Visualizar</a>
-                                                <a class="btn btn-warning btn-xs" href="tela_alterar?&id=${filme.id}">Editar</a>
+                                                <a class="btn btn-success btn-xs" href="visualizar_filme?id=${filme.id}">Visualizar</a>
+                                                <a class="btn btn-warning btn-xs" href="alterar_filme?id=${filme.id}">Editar</a>
                                                 <button id="btn${filme.id }%>" type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#delete-modal" data-filme="${filme.id }">Excluir</button>
                                             </td>
                                         </tr>

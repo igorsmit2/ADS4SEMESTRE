@@ -16,8 +16,6 @@ public class Genero {
 	@NotNull
 	@Size(max=60)
 	private String nome;
-	
-	
 	public int getId() {
 		return id;
 	}
