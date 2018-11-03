@@ -76,7 +76,7 @@ public class ManterFilmesRestController {
 	@RequestMapping(method=RequestMethod.PUT, value="rest/filme")
 	public ResponseEntity<Filme> alterarFilme(@RequestBody Filme filme){
 		try {
-			fService.alterarFilme(filme);
+			fService.atualizarFilme(filme);
 			return new ResponseEntity<Filme>(filme, HttpStatus.OK);
 		} catch (IOException e) {
 			e.printStackTrace();

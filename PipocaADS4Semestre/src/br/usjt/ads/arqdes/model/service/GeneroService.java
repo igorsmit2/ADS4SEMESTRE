@@ -16,7 +16,7 @@ public class GeneroService {
 	public Genero buscarGenero(int id) throws IOException {
 		return dao.buscarGenero(id);
 	}
-		
+	
 	public List<Genero> listarGeneros() throws IOException{
 		return dao.listarGeneros();
 	}

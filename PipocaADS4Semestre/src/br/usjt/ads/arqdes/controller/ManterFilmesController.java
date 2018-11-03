@@ -26,6 +26,9 @@ public class ManterFilmesController {
 	@Autowired
 	private GeneroService gService;
 	
+	public ManterFilmesController() {
+		System.out.println("versão 0.7b.07");
+	}
 	
 	@RequestMapping("/")
 	public String inicio() {
@@ -44,77 +47,16 @@ public class ManterFilmesController {
 	}
 	
 	@RequestMapping("/novo_filme")
-	public String novoFilme(HttpSession session){
+	public String novoFilme(HttpSession session) {
 		try {
 			List<Genero> generos = gService.listarGeneros();
 			session.setAttribute("generos", generos);
-			 return "CriarFilme";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "index";
-	}	
-	
-	@RequestMapping("/excluir_filme")
-	public String excluirFilme(Filme filme, Model model, @RequestParam int id) {
-		try {
-			fService.excluirFilme(filme.getId());
-			return "index";
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "Erro";
-	}
-	@RequestMapping("/alterar_filme")
-	public String alterarFilme(Filme filme, Model model, @RequestParam int id) {
-		System.out.println(filme);
-		try {
-			Genero genero = gService.buscarGenero(filme.getGenero().getId());
-			filme.setGenero(genero);
-			System.out.println(filme);
-			model.addAttribute("filme", filme);
-			fService.alterarFilme(filme);
-			return "VisualizarFilme";
-
+			return "CriarFilme";
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return "index";
 	}
-	@RequestMapping("/catalogo_popularidade")
-	public String catalogoPopularidade(Model model) {
-		try {
-			List<Filme> lista;
-			lista = fService.buscarFilmePopularidade();
-			model.addAttribute("lista", lista);
-			return "CatalogoPopularidade";
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "Erro";
-	}
-	
-	@RequestMapping("/tela_alterar")
-	public String telaAlterar(Filme filme, Model model, @RequestParam int id, HttpSession session) {
-		try {
-			List<Genero> generos = gService.listarGeneros();
-			filme = fService.buscarFilme(filme.getId());
-			model.addAttribute("filme", filme);
-			model.addAttribute("generos", generos);
-			session.setAttribute("generos", generos);
-			return "AlterarFilme";
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "Erro";
-	}
-	
 	
 	@RequestMapping("/inserir_filme")
 	public String inserirFilme(@Valid Filme filme, BindingResult result, Model model) {
@@ -130,34 +72,15 @@ public class ManterFilmesController {
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return "index";
 	}
-	
-	@RequestMapping("/visualizar_filme")
-	public String visualizarFilme(Filme filme, Model model, @RequestParam int id) {
-		try {
-			filme = fService.buscarFilme(id);
-			Genero genero = gService.buscarGenero(filme.getGenero().getId());
-			filme.setGenero(genero);
-			model.addAttribute("filme", filme);
-			return "VisualizarFilme";
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "index";
-	}
-	
+
 	@RequestMapping("/buscar_filmes")
-	public String buscarFilmes(HttpSession session, @RequestParam String chave) {
-		
+	public String buscarFilmes(HttpSession session, @RequestParam String chave){
 		try {
 			List<Filme> lista;
-			
 			if (chave != null && chave.length() > 0) {
 				lista = fService.listarFilmes(chave);
 			} else {
@@ -166,12 +89,120 @@ public class ManterFilmesController {
 			session.setAttribute("lista", lista);
 			return "ListarFilmes";
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "Erro";
 		}
-		return "Erro";
+	}
+	@RequestMapping("/visualizar_filme")
+	public String visualizarFilme(Filme filme, Model model) {
+		try {
+			filme = fService.buscarFilme(filme.getId());
+			model.addAttribute("filme", filme);
+			return "VisualizarFilme";
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("erro", e);
+			return "Erro";
+		}
+	}
+	
+	@RequestMapping("/excluir_filme")
+	public String excluirFilme(Filme filme, HttpSession session, Model model) {
+		try {
+			fService.excluirFilme(filme.getId());
+			List<Filme> filmes = (List<Filme>) session.getAttribute("lista");
+			session.setAttribute("lista", removerDaLista(filme, filmes));
+			return "ListarFilmes";
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("erro", e);
+			return "Erro";
+		}
+	}
+	
+	private List<Filme> removerDaLista(Filme filme, List<Filme> filmes){
+		for(int i = 0; i < filmes.size(); i++) {
+			if(filme.getId() == filmes.get(i).getId()) {
+				filmes.remove(i);
+				break;
+			}
+		}
+		return filmes;
+	}
+	
+	private List<Filme> atualizarDaLista(Filme filme, List<Filme> filmes){
+		for(int i = 0; i < filmes.size(); i++) {
+			if(filme.getId() == filmes.get(i).getId()) {
+				filmes.remove(i);
+				filmes.add(i, filme);
+				break;
+			}
+		}
+		return filmes;
+	}
+	
+	@RequestMapping("/alterar_filme")
+	public String atualizar(Filme filme, Model model, HttpSession session) {
+		try {
+			List<Genero> generos = gService.listarGeneros();
+			session.setAttribute("generos", generos);
+			filme = fService.buscarFilme(filme.getId());
+			model.addAttribute("filme", filme);
+			return "AtualizarFilme";
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("erro", e);
+			return "Erro";
+		}
 	}
 
+	@RequestMapping("/atualizar_filme")
+	public String gravarAtualizacaoFilme(@Valid Filme filme, BindingResult erros, Model model, HttpSession session) {
+		try {
+			if (!erros.hasErrors()) {
+				Genero genero = new Genero();
+				genero.setId(filme.getGenero().getId());
+				genero.setNome(gService.buscarGenero(genero.getId()).getNome());
+				filme.setGenero(genero);
+
+				fService.atualizarFilme(filme);
+
+				model.addAttribute("filme", filme);
+				List<Filme> filmes = (List<Filme>) session.getAttribute("lista");
+				session.setAttribute("lista", atualizarDaLista(filme, filmes));
+
+				return "VisualizarFilme";
+			} else {
+				return "AtualizarFilme";
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			model.addAttribute("erro", e);
+			return "Erro";
+		}
+	}
+	
+	@RequestMapping("/baixar_populares")
+	public String baixarFilmesMaisPopulares() {
+		try {
+			fService.baixarFilmesMaisPopulares();
+			return "ListarFilmes";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Erro";
+		}
+	}
+	
+	@RequestMapping("/baixar_lancamentos")
+	public String baixarLancamentos() {
+		try {
+			fService.baixarLancamentos();
+			return "ListarFilmes";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Erro";
+		}
+	}
 }
 
 
